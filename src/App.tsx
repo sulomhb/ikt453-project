@@ -39,12 +39,18 @@ function App() {
     PostgreSQL: 'blue'
   };
 
+  const backgroundColors: Record<string, string> = {
+    MongoDB: '#d0f0d0', // Light green
+    Redis: '#f8d0d0', // Light red
+    PostgreSQL: '#d0d8f8' // Light blue
+  };
+
   const handleRunQuery = (queryType: keyof QuerySet) => {
     setQueryResult(`Result for: ${exampleQueries[activeTab][queryType]}`);
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: backgroundColors[activeTab], minHeight: '100vh', padding: '20px' }}>
       <h1>IKT453 - Database Overview</h1>
       <div className="tabs" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {Object.keys(exampleQueries).map((db) => (
