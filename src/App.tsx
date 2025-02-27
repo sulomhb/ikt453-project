@@ -50,7 +50,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ backgroundColor: backgroundColors[activeTab], minHeight: '100vh', padding: '20px' }}>
+    <div className="App" style={{ backgroundColor: backgroundColors[activeTab], minHeight: '100vh', padding: '20px', color: '#333' }}>
       <h1>IKT453 - Database Overview</h1>
       <div className="tabs" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {Object.keys(exampleQueries).map((db) => (
