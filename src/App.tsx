@@ -50,9 +50,10 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ backgroundColor: backgroundColors[activeTab], minHeight: '100vh', padding: '20px', color: '#333' }}>
-      <h1>IKT453 - Database Overview</h1>
-      <div className="tabs" style={{ display: 'flex', justifyContent: 'space-between' }}>
+<div className="App" style={{ 
+backgroundColor: backgroundColors[activeTab], 
+}}>      <h1>IKT453 - Database Overview</h1>
+      <div className="tabs" >
         {Object.keys(exampleQueries).map((db) => (
           <button 
             key={db} 
@@ -64,8 +65,10 @@ function App() {
           </button>
         ))}
       </div>
-      <div className="content">
-        <h2>{activeTab}</h2>
+      <div className="content" style={{ 
+backgroundColor: backgroundColors[activeTab], 
+}} >
+        <h1>{activeTab}</h1>
         <p><strong>Example Queries:</strong></p>
         {(['select', 'insert', 'update', 'delete'] as (keyof QuerySet)[]).map((queryType) => (
           <div key={queryType}>
