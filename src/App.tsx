@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>IKT453 - Database Overview</h1>
+      <h1>IKT453 - Database Project</h1>
       <div className="tabs">
         {Object.keys(exampleQueries).map((db) => (
           <button 
