@@ -33,19 +33,26 @@ function App() {
   const [activeTab, setActiveTab] = useState<keyof typeof exampleQueries>('MongoDB');
   const [queryResult, setQueryResult] = useState<string>('');
 
+  const tabColors: Record<string, string> = {
+    MongoDB: 'green',
+    Redis: 'red',
+    PostgreSQL: 'blue'
+  };
+
   const handleRunQuery = (queryType: keyof QuerySet) => {
     setQueryResult(`Result for: ${exampleQueries[activeTab][queryType]}`);
   };
 
   return (
     <div className="App">
-      <h1>IKT453 - Database Project</h1>
-      <div className="tabs">
+      <h1>IKT453 - Database Overview</h1>
+      <div className="tabs" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {Object.keys(exampleQueries).map((db) => (
           <button 
             key={db} 
             className={activeTab === db ? 'active' : ''} 
             onClick={() => setActiveTab(db as keyof typeof exampleQueries)}
+            style={{ backgroundColor: tabColors[db], color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }}
           >
             {db}
           </button>
