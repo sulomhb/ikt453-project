@@ -1,5 +1,5 @@
 import { connectMongoDB } from "./mongodb/connect_mongodb.ts";
-import { connectRedis } from "./connect_redis.ts";
+import { connectRedis } from "./redis/connect_redis.ts";
 import { connectPostgreSQL } from "./postgresql/connect_postgresql.ts";
 
 // Type alias for clarity

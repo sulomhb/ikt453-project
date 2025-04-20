@@ -6,13 +6,14 @@ const casesEndpoint = "https://api.gdc.cancer.gov/cases"
 
 const parameters = {
     "filters": JSON.stringify({
-        "op": "and",
-        "content": [
-            {"op": "in", "content": {"field": "project.project_id", "value": ["TCGA-BRCA"]}},
-            {"op": "in", "content": {"field": "files.data_type", "value": ["Clinical Supplement"]}}
-        ]
+        "op": "in",
+        "content": {
+            "field": "project.project_id",
+            "value": ["TCGA-BRCA"]
+        }
     }),
-    "size": 10  // Get 100 patient records
+    "size": 10,
+    "expand": "diagnoses" // Optional: to include related diagnoses in the same response
 }
 
 const response = await axios.get(casesEndpoint, {

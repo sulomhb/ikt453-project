@@ -2,7 +2,11 @@
 import express from "express";
 import cors from "cors";
 import { populateMongoDB, populatePostgreSQL, populateRedis } from "../api/populate_db.ts";
-import { selectMongoDB } from "../api/mongodb/select_mongodb.ts";
+// routes
+import postgresRouter from './routes/postgres.ts';
+import mongodbRouter from './routes/mongodb.ts';
+import redisRouter from './routes/redis.ts';
+import kafkaRouter from './routes/kafka.ts';  // Import Kafka route module
 
 const app = express();
 const PORT = 3001;
@@ -27,18 +31,11 @@ app.post("/populate", async (req, res) => {
   }
 });
 
-// Routes
-app.get("/mongodb/clinical", async (req, res) => {
-  try {
-    const clinicalData = req.body;
-    console.log("Received clinical data:", clinicalData);
-    let data = await selectMongoDB();
-    res.status(200).send({"status" : "SELECT from MongoDB success.", "body" : data});
-  } catch (err) {
-    res.status(500).send({"status" : "SELECT from MongoDB failed.", "body" : []});
-  }
-});
-
+// Database-specific routes
+app.use('/postgres', postgresRouter);
+app.use('/mongodb', mongodbRouter);
+app.use('/redis', redisRouter);
+app.use('/kafka', kafkaRouter);
 
 // Start the server
 app.listen(PORT, () => {

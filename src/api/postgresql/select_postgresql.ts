@@ -5,7 +5,6 @@ export async function selectPostgreSQL(): Promise<any> {
     try {
         const postgresqlClient = await connectPostgreSQL();
         let selectQuery = 'select * from clinical_data where id < 20';
-        const selectValues = ['\{\"TEST\" : \"TEST\"\}']
         let selectSucess = await postgresqlClient.query(selectQuery);
         if(selectSucess.rowCount) {
             console.log("Rows selected:", selectSucess.rowCount);
@@ -17,5 +16,3 @@ export async function selectPostgreSQL(): Promise<any> {
         console.log("Failed to select from PostgreSQL: ", error)
     }
 }
-
-await selectPostgreSQL();
