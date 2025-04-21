@@ -12,7 +12,9 @@ const app = express();
 const PORT = 3001;
 
 // Middleware
-app.use(cors()); // Allow cross-origin requests from your React frontend
+app.use(cors({
+  origin: 'http://localhost:5173' // Allow only your frontend to make requests
+}));
 app.use(express.json()); // Parse JSON request bodies
 
 // Routes

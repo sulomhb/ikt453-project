@@ -6,3 +6,102 @@ services:
     ports:
       - "5173:5173"
     command: ["sh", "-c", "docker ps -q --filter publish=5173 | xargs -r docker stop | xargs -r docker rm && npm run dev -- --host 0.0.0.0"]
+    depends_on:
+      - express-api
+      - kafka
+      - ikt453-mongodb
+      - ikt453-postgres
+      - ikt453-redis-stack
+
+  ikt453-mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: ikt453-mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  ikt453-postgres:
+    image: postgres:latest
+    container_name: ikt453-postgres
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  ikt453-redis-stack:
+    image: redis/redis-stack:latest
+    container_name: ikt453-redis-stack
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - backend
+
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENER: INSIDE_KAFKA:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_LISTENER_NAME: INSIDE_KAFKA
+      KAFKA_LISTENER_PORT: 9092
+      KAFKA_LISTENER_INSIDE: INSIDE_KAFKA
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_MODE: BROKER
+    ports:
+      - "9092:9092"
+    networks:
+      - backend
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.5.7
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - backend
+
+  express-api:
+    image: node:latest
+    container_name: express-api
+    working_dir: /usr/src/app
+    volumes:
+      - ./src/backend:/usr/src/app
+    ports:
+      - "3001:3001"
+    networks:
+      - backend
+    command: ["sh", "-c", "npm install && ts-node server.ts"]
+    depends_on:
+      - ikt453-mongodb
+      - ikt453-postgres
+      - ikt453-redis-stack
+      - kafka
+
+  websocket:
+    image: node:latest
+    container_name: websocket
+    working_dir: /usr/src/app
+    volumes:
+      - ./src/backend:/usr/src/app
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    command: ["sh", "-c", "npm install && ts-node websocket.ts"]
+    depends_on:
+      - ikt453-mongodb
+      - ikt453-postgres
+      - ikt453-redis-stack
+      - kafka
+
+networks:
+  backend:
+    driver: bridge

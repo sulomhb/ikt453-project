@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 interface QuerySet {
@@ -35,7 +35,6 @@ function App() {
   const [queryResult, setQueryResult] = useState<string>("");
 
   const tabColors: Record<string, string> = {
-    Demo: "white",
     MongoDB: "green",
     Redis: "red",
     PostgreSQL: "blue",
@@ -58,63 +57,46 @@ function App() {
         backgroundColor: backgroundColors[activeTab],
       }}
     >
-      {" "}
-      <div className="tabs" style={{
-        padding: 20,
-      }}>
-      <button
-            style={{
-              backgroundColor: "black",
-              color: "white",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-            }}
-            onClick={() => window.location.assign("/demo")}
-          >
-            Demo
-          </button>
+      {/* Tab Navigation */}
+      <div className="tabs flex gap-4 p-4 justify-center">
+        <button
+          className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
+          onClick={() => window.location.assign("/demo")}
+        >
+          Demo
+        </button>
         {Object.keys(exampleQueries).map((db) => (
           <button
             key={db}
-            className={activeTab === db ? "active" : ""}
+            className={`py-2 px-4 rounded-lg text-white transition ${activeTab === db ? "bg-gray-800" : `bg-${tabColors[db]}-900`} hover:bg-opacity-80`}
             onClick={() => setActiveTab(db as keyof typeof exampleQueries)}
-            style={{
-              backgroundColor: tabColors[db],
-              color: "white",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-            }}
           >
             {db}
           </button>
         ))}
       </div>
+
+      {/* Query Content */}
       <div
-        className="content"
+        className="content max-w-4xl mx-auto p-6 rounded-lg shadow-xl my-6"
         style={{
           backgroundColor: backgroundColors[activeTab],
         }}
       >
-        <h1>{activeTab}</h1>
-        <p>
-          <strong>Result:</strong>
-        </p>
-        <pre>{queryResult}</pre>
-        <p>
-          <strong>Example Queries:</strong>
-        </p>
+        <h1 className="text-3xl font-semibold text-center mb-6 text-black">{activeTab}</h1>
+        <p className="font-bold text-xl text-black">Result:</p>
+        <pre className="bg-gray-100 p-4 rounded-lg mb-6 text-black">{queryResult}</pre>
+
+        <p className="font-bold text-xl text-black">Example Queries:</p>
         {(["select", "insert", "update", "delete"] as (keyof QuerySet)[]).map(
           (queryType) => (
-            <div key={queryType}>
-              <p>
-                <strong>{queryType.toUpperCase()}:</strong>
-              </p>
-              <code>{exampleQueries[activeTab][queryType]}</code>
-              <br />
-              <br />
-              <button onClick={() => handleRunQuery(queryType)}>
+            <div key={queryType} className="query-container mb-6">
+              <p className="font-semibold text-lg text-black">{queryType.toUpperCase()}:</p>
+              <code className="block bg-gray-200 p-4 rounded-lg text-black font-mono">{exampleQueries[activeTab][queryType]}</code>
+              <button
+                onClick={() => handleRunQuery(queryType)}
+                className="mt-3 bg-black text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition"
+              >
                 Run {queryType}
               </button>
             </div>

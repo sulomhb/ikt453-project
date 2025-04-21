@@ -1,33 +1,40 @@
-import axios from 'axios';
-// This hook fetches clinical data from the GDC API for a specific project (e.g., TCGA-BRCA)
+import axios from "axios";
+
+// This function fetches clinical data from multiple diverse TCGA projects with random offset
 async function useClinicalData() {
+  const casesEndpoint = "https://api.gdc.cancer.gov/cases";
 
-const casesEndpoint = "https://api.gdc.cancer.gov/cases"
+  const randomOffset = Math.floor(Math.random() * 10000); // Adds randomness for more varied data
 
-const parameters = {
-    "filters": JSON.stringify({
-        "op": "in",
-        "content": {
-            "field": "project.project_id",
-            "value": ["TCGA-BRCA"]
-        }
+  const parameters = {
+    filters: JSON.stringify({
+      op: "in",
+      content: {
+        field: "project.project_id",
+        value: [
+          "TCGA-BRCA", "TCGA-LUAD", "TCGA-LAML", "TCGA-GBM", "TCGA-KIRC",
+          "TCGA-OV", "TCGA-COAD", "TCGA-PRAD", "TCGA-STAD", "TCGA-SKCM"
+        ]
+      }
     }),
-    "size": 10,
-    "expand": "diagnoses" // Optional: to include related diagnoses in the same response
-}
+    size: 100,               // Get a sizable batch of records
+    from: randomOffset,      // Start from a random point in the dataset
+    expand: "diagnoses"      // Include diagnosis data inline
+  };
 
-const response = await axios.get(casesEndpoint, {
+  const response = await axios.get(casesEndpoint, {
     method: "GET",
     headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+      "Content-Type": "application/json",
+      Accept: "application/json",
     },
-    params: parameters
-})
-const jsonResponse : any = response.data;
-const clinicalData = jsonResponse.data?.hits || [];
-console.log("Clinical Data: ", clinicalData);
-return clinicalData;
+    params: parameters,
+  });
+
+  const jsonResponse: any = response.data;
+  const clinicalData = jsonResponse.data?.hits || [];
+
+  return clinicalData;
 }
 
 export default useClinicalData;
