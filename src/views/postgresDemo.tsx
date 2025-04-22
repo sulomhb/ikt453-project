@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 interface AnalyticsRow {
   primary_site?: string;
   lost_to_followup?: boolean;
@@ -22,6 +24,36 @@ interface Diagnosis {
 }
 
 export const PostgresAnalytics = ({ data }: { data: AnalyticsRow[] }) => {
+
+  const sendPostgresKafka = async (data: any) => {
+    const url = "http://localhost:3001/kafka/send-analytics-data";
+    try {
+      const payload = {
+        analyticsData: {
+          value: JSON.stringify(data),
+        },
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (data && Object.keys(data).length > 0) {
+      sendPostgresKafka(data); 
+    } else {
+      console.log("No analytical data to send.");
+    }
+  }, [data]);
   return (
     <div className="p-6 rounded-lg bg-base-100 shadow-md">
   <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">

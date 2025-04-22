@@ -42,6 +42,7 @@ router.post('/send-clinical-data', async (req: Request, res: Response): Promise<
       topic: 'clinical-data',
       messages: [{ value: JSON.stringify(clinicalData) }],
     });
+
     res.status(200).send('Data sent to Kafka');
   } catch (error) {
     console.error('Error sending data to Kafka:', error);

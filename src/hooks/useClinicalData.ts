@@ -17,7 +17,7 @@ async function useClinicalData() {
         ]
       }
     }),
-    size: 100,               // Get a sizable batch of records
+    size: 10,               // Get a sizable batch of records
     from: randomOffset,      // Start from a random point in the dataset
     expand: "diagnoses"      // Include diagnosis data inline
   };

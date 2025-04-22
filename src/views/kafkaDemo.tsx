@@ -126,8 +126,10 @@ export const KafkaStream = ({ data }: { data: any }) => {
   }, []);
 
   return (
-    <div className="p-6 rounded-lg bg-base-100 shadow-md">
+    <div className="p-6 rounded-lg shadow-md">
+      {/*
       <div className="flex space-x-4 mb-6">
+        
         <button
           onClick={sendPostgresKafka}
           className="btn btn-soft btn-info text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-lg"
@@ -147,8 +149,9 @@ export const KafkaStream = ({ data }: { data: any }) => {
           Redis
         </button>
       </div>
+      }*/}
 
-      <h4 className="text-xl font-semibold text-white mb-4">Real-Time Data Updates (Kafka)</h4>
+      <h4 className="text-xl font-semibold text-pink-500 mb-4">Real-Time Data Updates (Kafka)</h4>
       
 
       <div className="overflow-x-auto bg-blue-500 p-4 rounded-lg shadow-sm border border-base-content/10">

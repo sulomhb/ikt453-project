@@ -1,6 +1,34 @@
 import { useEffect, useState } from "react";
 
 export const MongoClinical = ({ data }: { data: any }) => {
+  const sendMongoDBKafka = async (payload: any) => {
+    const url = "http://localhost:3001/kafka/send-clinical-data";
+    try {
+      if (!payload || !payload.clinicalData) {
+        console.error("Invalid payload, missing 'clinicalData'.");
+        return;
+      }
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+  
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error("Error sending data to Kafka:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (data && Object.keys(data).length > 0) {
+      sendMongoDBKafka({ clinicalData: data }); 
+    } else {
+      console.log("No clinical data to send.");
+    }
+  }, [data]);
+
   return (
     <>
        <div className="p-6 rounded-lg bg-base-100 shadow-md">

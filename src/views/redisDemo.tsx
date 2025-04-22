@@ -1,6 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 
 export const RedisCache = ({ data }: { data: any }) => {
+
+  const sendRedisKafka = async (data: any) => {
+    const url = "http://localhost:3001/kafka/send-cache-data";
+    try {
+      const payload = {
+        cacheData: data, // <== send the object directly, not wrapped in `.value`
+      };
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+  
+      const text = await response.text(); // since you send a plain string back
+      console.log(text);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (data && Object.keys(data).length > 0) {
+      sendRedisKafka(data); 
+    } else {
+      console.log("No cache data to send.");
+    }
+  }, [data]);
+
   return (
     <div className="p-6 rounded-lg bg-base-100 shadow-md">
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
