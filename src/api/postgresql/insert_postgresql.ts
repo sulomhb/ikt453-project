@@ -1,20 +1,20 @@
-import { connectPostgreSQL } from "./connect_postgresql.ts";
+import { connectPostgreSQL } from './connect_postgresql.ts';
 
-// POSTGRESQL
-export async function insertPostgreSQL(): Promise<any> {
-    try {
-        const postgresqlClient = await connectPostgreSQL();
-        let insertQuery = 'INSERT INTO clinical_data(data) VALUES($1) RETURNING *'
-        const insertValues = ['\{\"TEST\" : \"TEST\"\}']
-        let insertSucess = await postgresqlClient.query(insertQuery, insertValues);
-        if(insertSucess.rowCount) {
-            console.log("Rows inserted:", insertSucess.rowCount);
-        }
-        await postgresqlClient.end()
-        return insertSucess;
-    } catch(error) {
-        console.log("Failed to insert from PostgreSQL: ", error)
-    }
+export async function insertPostgreSQL(data: any): Promise<any> {
+  try {
+    const client = await connectPostgreSQL();
+
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
+
+    const query = `INSERT INTO dimdiagnosis (${keys.join(', ')}) VALUES (${placeholders}) RETURNING *`;
+    const result = await client.query(query, values);
+
+    await client.end();
+    return result.rows[0];
+  } catch (error) {
+    console.error('Failed to insert into PostgreSQL:', error);
+    throw error;
+  }
 }
-
-await insertPostgreSQL();

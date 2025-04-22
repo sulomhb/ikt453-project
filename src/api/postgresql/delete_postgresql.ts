@@ -1,17 +1,18 @@
-import { connectPostgreSQL } from "./connect_postgresql.ts";
+import { connectPostgreSQL } from './connect_postgresql.ts';
 
-// POSTGRESQL
-export async function deletePostgreSQL(): Promise<any> {
-    try {
-        const postgresqlClient = await connectPostgreSQL();
-        let deleteQuery = 'delete from clinical_data where id=13';
-        let deleteSucess = await postgresqlClient.query(deleteQuery);
-        if(deleteSucess.rowCount) {
-            console.log("Rows deleted:", deleteSucess.rowCount);
-        }
-        await postgresqlClient.end()
-        return deleteSucess;
-    } catch(error) {
-        console.log("Failed to delete from PostgreSQL: ", error)
-    }
+export async function deletePostgreSQL(data: any): Promise<any> {
+  try {
+    const client = await connectPostgreSQL();
+
+    if (!data.id) throw new Error('Missing ID for delete');
+
+    const query = 'DELETE FROM dimdiagnosis WHERE diagnosis_id = $1 RETURNING *';
+    const result = await client.query(query, [data.id]);
+
+    await client.end();
+    return result.rows[0];
+  } catch (error) {
+    console.error('Failed to delete from PostgreSQL:', error);
+    throw error;
+  }
 }

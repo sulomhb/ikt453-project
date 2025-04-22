@@ -33,7 +33,7 @@ async function useClinicalData() {
 
   const jsonResponse: any = response.data;
   const clinicalData = jsonResponse.data?.hits || [];
-
+  console.log(clinicalData)
   return clinicalData;
 }
 

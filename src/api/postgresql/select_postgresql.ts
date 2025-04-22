@@ -1,18 +1,25 @@
-import { connectPostgreSQL } from "./connect_postgresql.ts";
+import { connectPostgreSQL } from './connect_postgresql.ts';
 
-// POSTGRESQL
-export async function selectPostgreSQL(): Promise<any> {
-    try {
-        const postgresqlClient = await connectPostgreSQL();
-        let selectQuery = 'select * from clinical_data where id < 20';
-        let selectSucess = await postgresqlClient.query(selectQuery);
-        if(selectSucess.rowCount) {
-            console.log("Rows selected:", selectSucess.rowCount);
-        }
-        console.log("Rows selected:", selectSucess.rows);
-        await postgresqlClient.end()
-        return selectSucess;
-    } catch(error) {
-        console.log("Failed to select from PostgreSQL: ", error)
+export async function selectPostgreSQL(filters?: any): Promise<any> {
+  try {
+    const client = await connectPostgreSQL();
+
+    let query = 'SELECT * FROM dimdiagnosis';
+    const values: any[] = [];
+
+    if (filters && Object.keys(filters).length > 0) {
+      const conditions = Object.keys(filters)
+        .map((key, index) => `${key} = $${index + 1}`)
+        .join(' AND ');
+      query += ` WHERE ${conditions}`;
+      values.push(...Object.values(filters));
     }
+
+    const result = await client.query(query, values);
+    await client.end();
+    return result;
+  } catch (error) {
+    console.error('Failed to select from PostgreSQL:', error);
+    throw error;
+  }
 }

@@ -6,13 +6,11 @@ export const KafkaStream = ({ data }: { data: any }) => {
   const [redisCacheMessage, setRedisCacheMessage] = useState<string>("");
 
   async function sendPostgresKafka() {
-    console.log(data);
     const url = "http://localhost:3001/kafka/send-analytics-data";
     try {
       const payload = {
         analyticsData: {
-          key: 10,
-          value: `POSTGRES KAFKA BUTTON HAS BEEN PRESSED. DATA: ${JSON.stringify(data[0])}`,
+          value: JSON.stringify(data),
         },
       };
 
@@ -41,7 +39,7 @@ export const KafkaStream = ({ data }: { data: any }) => {
       const payload = {
         clinicalData: {
           days_to_consent: 10,
-          disease_type: `MONGODB KAFKA BUTTON HAS BEEN PRESSED. DATA: ${JSON.stringify(data[0])}`,
+          disease_type: JSON.stringify(data),
         },
       };
 
@@ -69,7 +67,7 @@ export const KafkaStream = ({ data }: { data: any }) => {
     try {
       const payload = {
         cacheData: {
-          value: `REDIS KAFKA BUTTON HAS BEEN PRESSED. DATA: ${JSON.stringify(data[0])}`,
+          value: JSON.stringify(data),
         },
       };
 
@@ -106,7 +104,7 @@ export const KafkaStream = ({ data }: { data: any }) => {
       const kafkaMessageString = JSON.stringify(kafkaMessage);
     
       // Truncate the string to the first 100 characters for display
-      const truncatedMessage = kafkaMessageString.substring(0, 300);
+      const truncatedMessage = kafkaMessageString.substring(0, 600);
     
       // Update the respective state based on the topic
       if (topic === "clinical-data") {

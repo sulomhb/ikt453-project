@@ -24,13 +24,12 @@ function Demo() {
 
   // Modal states
   const [activeModal, setActiveModal] = useState<"postgres" | "mongo" | "redis" | null>(null);
-
-  const loadData = async () => {
+  const loadData = async (data : any) => {
     try {
       const [analytics, clinical, cache] = await Promise.all([
-        useClinicalData(),
-        useClinicalData(),
-        useClinicalData(),
+        data,
+        data,
+        data
       ]);
       setDemoData({ analytics, clinical, cache });
     } catch (err) {
@@ -40,15 +39,16 @@ function Demo() {
     }
   };
 
-  // Load data on initial mount
   useEffect(() => {
-    loadData();
+    const data = useClinicalData();
+    loadData(data);
   }, []);
 
   const handleRefresh = async () => {
+    const data = useClinicalData();
     setLoading(true);
     setError(null);
-    await loadData();
+    await loadData(data);
   };
 
   // Check if all data is loaded before rendering tables

@@ -1,15 +1,23 @@
-import { connectRedis } from "./connect_redis.ts";
+import { connectRedis } from './connect_redis.ts';
 
-// REDIS
-export async function deleteRedis(): Promise<any> {
-    const redisClient = await connectRedis();
-    const deleteSucess = await redisClient.del("sample_restaurant:49");
-    if(deleteSucess > 0) {
-        console.log("Delete success:", deleteSucess);
-    } else {
-        console.log("Delete failed:", deleteSucess);
+export async function deleteRedis(key: string): Promise<any> {
+  try {
+    const client = await connectRedis();
+
+    // Check if the key exists before attempting to delete it
+    const exists = await client.exists(key);
+    if (!exists) {
+      client.disconnect();
+      return { success: false, message: 'Key does not exist', key };
     }
-    redisClient.disconnect();
-    return deleteSucess;
+
+    const result = await client.del(key);
+    client.disconnect();
+
+    // Check if the deletion was successful
+    return { success: result > 0, key };
+  } catch (err) {
+    console.error('Redis delete error:', err);
+    throw err;
+  }
 }
-await deleteRedis();
